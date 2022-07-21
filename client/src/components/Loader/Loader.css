@@ -1,0 +1,20 @@
+.loader {
+  position: relative;
+  min-height: 50px;
+}
+
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* opacity: 0.5; */
+  background-color: rgba(241, 241, 241, 0.881);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: black;
+  text-shadow: 0px 0px 5px rgb(255, 255, 255);
+}

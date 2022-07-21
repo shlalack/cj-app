@@ -2,10 +2,22 @@
   "name": "cj-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
+    "build": "cd client/ && npm install && npm run build",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npx nodemon server.js\" \"npm run client\" ",
+    "server": "npx nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
