@@ -3,15 +3,17 @@ import "./App.css";
 import ImportData from "../ImportData/ImportData";
 import CreateData from "../CreateData/CreateData";
 import AccessServer from "../AccessServer/AccessServer";
+import LocalStorage from "../LocalStorage/LocalStorage";
 
 const components = {
   ImportData,
   CreateData,
   AccessServer,
+  LocalStorage,
 };
 
 function App() {
-  const [view, setView] = useState("AccessServer");
+  const [view, setView] = useState("LocalStorage");
 
   const C = components[view];
   return (

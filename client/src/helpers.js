@@ -1,5 +1,5 @@
-export function clamp(min, value, max) {
-  return Math.max(min, Math.min(value, max));
+export function clamp(min, num, max) {
+  return Math.min(Math.max(min, num), max);
 }
 
 export function getPreviewData(dataString, count, separator) {
@@ -18,12 +18,6 @@ export function getPreviewData(dataString, count, separator) {
 }
 
 export function getPreviewArray(array, startIndex, previewRowsCount) {
-  console.log(
-    "getPreviewArray: array, startIndex, previewRowsCount",
-    // array,
-    startIndex,
-    previewRowsCount
-  );
   let previewRows = [];
   for (let i = 0; i < previewRowsCount; i++) {
     previewRows.push(array[startIndex + i]);
