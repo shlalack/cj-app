@@ -1,7 +1,10 @@
 import { useState } from "react";
 import PreviewRows from "../PreviewRows/PreviewRows";
+import Loader from "../Loader/Loader";
+import Sort from "../Sort/Sort";
 import { separatorTypes } from "../../constants";
 import { clamp, getPreviewArray } from "../../helpers";
+import useSort from "../../hooks/useSort";
 
 const previewRowsCount = 5;
 const shift = Math.floor(previewRowsCount / 2);
@@ -28,8 +31,21 @@ function ImportData() {
   const [previewIndex, setPreviewIndex] = useState(1);
   const [previewRows, setPreviewRows] = useState(null);
   const [loadTime, setLoadTime] = useState(0);
+  const [sortFields, setSortFields] = useState(null);
+
+  const [{ sorted, sorting, duration }, sorter] = useSort();
 
   const maxRow = fileData?.rows?.length > 0 ? fileData.rows.length - 1 : 0;
+
+  function handlePreview(rowsToPreview, startIndex) {
+    const previewData = getPreviewArray(
+      rowsToPreview,
+      startIndex,
+      previewRowsCount
+    );
+    setPreviewIndex(startIndex);
+    setPreviewRows(previewData);
+  }
 
   function handleGetRow(e) {
     e.preventDefault();
@@ -41,13 +57,8 @@ function ImportData() {
     }
 
     const clamped = clamp(1 + shift, index, fileData.rows.length - shift - 1);
-    const previewData = getPreviewArray(
-      fileData.rows,
-      clamped - shift,
-      previewRowsCount
-    );
-    setPreviewIndex(clamped - shift);
-    setPreviewRows(previewData);
+    const shiftedIndex = clamped - shift;
+    handlePreview(fileData.rows, shiftedIndex);
   }
 
   function handleFileUpload(e) {
@@ -87,37 +98,48 @@ function ImportData() {
       let diff = endTime - startTime;
       setLoadTime(diff / 1000);
 
-      const previewData = getPreviewArray(rows, 1, previewRowsCount);
-      setPreviewIndex(1);
-      setPreviewRows(previewData);
+      setSortFields(rows[0]);
+
+      handlePreview(rows, 1);
     };
 
     reader.readAsText(file);
   }
 
+  const rowsToShow = sorted ? sorted : fileData.rows;
+
   return (
     <div>
-      <div className="flex-row justify-center align-center">
-        <input type="file" accept=".csv,.tsv" onChange={handleFileUpload} />
-        <div>{loadTime > 0 ? `(in ${loadTime} seconds)` : null}</div>
-      </div>
-
-      {fileData.rows.length > 0 ? (
-        <div>
-          <div>size: {fileData?.size} bytes</div>
-          <form onSubmit={handleGetRow}>
-            <label htmlFor="input-rowToShow">
-              Go to row number (1 - {maxRow.toLocaleString()})
-            </label>
-            <input id="input-rowToShow" type="text" />
-            <button type="submit">Go</button>
-          </form>
-          <PreviewRows
-            previewRows={[fileData.rows[0], ...previewRows]}
-            startIndex={previewIndex - 1}
-          />
+      <Loader loading={sorting} message={"Sorting..."}>
+        <div className="flex-row justify-center align-center">
+          <input type="file" accept=".csv,.tsv" onChange={handleFileUpload} />
+          <div>{loadTime > 0 ? `(in ${loadTime} seconds)` : null}</div>
         </div>
-      ) : null}
+
+        {rowsToShow.length > 0 ? (
+          <div>
+            <div>size: {fileData?.size} bytes</div>
+            <form onSubmit={handleGetRow}>
+              <label htmlFor="input-rowToShow">
+                Go to row number (1 - {maxRow.toLocaleString()})
+              </label>
+              <input id="input-rowToShow" type="text" />
+              <button type="submit">Go</button>
+            </form>
+            <Sort
+              data={fileData.rows}
+              sorter={sorter}
+              sortFields={sortFields}
+              sortDuration={duration}
+              callback={handlePreview}
+            />
+            <PreviewRows
+              previewRows={[rowsToShow[0], ...previewRows]}
+              startIndex={previewIndex - 1}
+            />
+          </div>
+        ) : null}
+      </Loader>
     </div>
   );
 }

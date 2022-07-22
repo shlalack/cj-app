@@ -24,3 +24,24 @@ export function getPreviewArray(array, startIndex, previewRowsCount) {
   }
   return previewRows;
 }
+
+export function getValueType(value) {
+  if (typeof value === "string") {
+    // Test for numbers
+    const asNumber = Number(value);
+    if (asNumber.toString() === value) {
+      return "number";
+    }
+    // Test for Dates
+    // Default return
+    return typeof value;
+  }
+
+  if (typeof value === "object") {
+    // Test for array
+    // Test for Date
+    return typeof value;
+  }
+
+  return typeof value;
+}

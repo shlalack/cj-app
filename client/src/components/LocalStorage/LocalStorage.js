@@ -1,4 +1,3 @@
-import Form from "./Form";
 import Note from "./Note";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import "./LocalStorage.css";

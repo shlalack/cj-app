@@ -13,7 +13,7 @@ const components = {
 };
 
 function App() {
-  const [view, setView] = useState("LocalStorage");
+  const [view, setView] = useState("ImportData");
 
   const C = components[view];
   return (

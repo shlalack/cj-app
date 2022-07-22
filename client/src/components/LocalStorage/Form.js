@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 function Form({ handler, id, value, handlerFocus, handlerBlur, placeholder }) {
   const inputRef = useRef(null);

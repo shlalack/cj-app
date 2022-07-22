@@ -23,7 +23,7 @@ function AccessServer() {
         <button type="submit">Go</button>
       </form>
       <div>
-        <Loader loading={loading}>
+        <Loader loading={loading} message={"Loading..."}>
           <Error>{error}</Error>
 
           {data ? (
