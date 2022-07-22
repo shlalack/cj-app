@@ -2,9 +2,11 @@ import { useState } from "react";
 import PreviewRows from "../PreviewRows/PreviewRows";
 import Loader from "../Loader/Loader";
 import Sort from "../Sort/Sort";
-import { separatorTypes } from "../../constants";
+import RadioInput from "../RadioInput/RadioInput";
+import { separatorTypes, sortDirections } from "../../constants";
 import { clamp, getPreviewArray } from "../../helpers";
 import useSort from "../../hooks/useSort";
+import "./ImportData.css";
 
 const previewRowsCount = 5;
 const shift = Math.floor(previewRowsCount / 2);
@@ -32,10 +34,15 @@ function ImportData() {
   const [previewRows, setPreviewRows] = useState(null);
   const [loadTime, setLoadTime] = useState(0);
   const [sortFields, setSortFields] = useState(null);
+  const [sortDirection, setSortDirection] = useState(sortDirections.ascending);
 
   const [{ sorted, sorting, duration }, sorter] = useSort();
 
   const maxRow = fileData?.rows?.length > 0 ? fileData.rows.length - 1 : 0;
+
+  function handleSortDirection(e) {
+    setSortDirection(e.target.value);
+  }
 
   function handlePreview(rowsToPreview, startIndex) {
     const previewData = getPreviewArray(
@@ -58,7 +65,7 @@ function ImportData() {
 
     const clamped = clamp(1 + shift, index, fileData.rows.length - shift - 1);
     const shiftedIndex = clamped - shift;
-    handlePreview(fileData.rows, shiftedIndex);
+    handlePreview(sorted ? sorted : fileData.rows, shiftedIndex);
   }
 
   function handleFileUpload(e) {
@@ -126,13 +133,24 @@ function ImportData() {
               <input id="input-rowToShow" type="text" />
               <button type="submit">Go</button>
             </form>
-            <Sort
-              data={fileData.rows}
-              sorter={sorter}
-              sortFields={sortFields}
-              sortDuration={duration}
-              callback={handlePreview}
-            />
+
+            <div className="sort-controls-box">
+              <RadioInput
+                handler={handleSortDirection}
+                selected={sortDirection}
+                options={Object.keys(sortDirections)}
+                groupName={"import-sort-direction"}
+              />
+              <Sort
+                data={fileData.rows}
+                sorter={sorter}
+                sortFields={sortFields}
+                sortDuration={duration}
+                sortDirection={sortDirection}
+                callback={handlePreview}
+              />
+            </div>
+
             <PreviewRows
               previewRows={[rowsToShow[0], ...previewRows]}
               startIndex={previewIndex - 1}

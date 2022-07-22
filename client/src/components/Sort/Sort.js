@@ -1,13 +1,25 @@
 import React from "react";
 
-function Sort({ data, sorter, sortFields, sortDuration, callback }) {
+function Sort({
+  data,
+  sorter,
+  sortFields,
+  sortDuration,
+  sortDirection,
+  callback,
+}) {
   if (!Array.isArray(data)) {
     return null;
   }
 
   function handleSort(e) {
     const { id } = e.target;
-    sorter(data, { sortField: id, hasHeaderRow: true, callback: callback });
+    sorter(data, {
+      sortField: id,
+      hasHeaderRow: true,
+      callback: callback,
+      sortDirection: sortDirection,
+    });
   }
 
   return (

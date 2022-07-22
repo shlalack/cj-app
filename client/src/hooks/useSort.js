@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getValueType } from "../helpers";
+import { sortDirections } from "../constants";
 
 function pause(ms) {
   return new Promise((res, rej) => {
@@ -15,15 +16,31 @@ const stringSort = (columnIndex) => (a, b) =>
     : a[columnIndex] > b[columnIndex]
     ? 1
     : -1;
+const stringSortDescending = (columnIndex) => (a, b) =>
+  b[columnIndex] === a[columnIndex]
+    ? 0
+    : b[columnIndex] > a[columnIndex]
+    ? 1
+    : -1;
 
 const numberSort = (columnIndex) => (a, b) =>
   Number(a[columnIndex]) - Number(b[columnIndex]);
+const numberSortDescending = (columnIndex) => (a, b) =>
+  Number(b[columnIndex]) - Number(a[columnIndex]);
+
+const stringSortDirections = {
+  [sortDirections.ascending]: stringSort,
+  [sortDirections.descending]: stringSortDescending,
+};
 
 const sortFunctions = {
-  undefined: stringSort,
-  number: numberSort,
-  string: stringSort,
-  date: stringSort,
+  undefined: stringSortDirections,
+  number: {
+    [sortDirections.ascending]: numberSort,
+    [sortDirections.descending]: numberSortDescending,
+  },
+  string: stringSortDirections,
+  date: stringSortDirections,
 };
 
 function runSort(sortFunction) {
@@ -42,7 +59,10 @@ function useSort() {
   const [sorting, setSorting] = useState(false);
   const [duration, setDuration] = useState(0);
 
-  async function sorter(array, { sortField, hasHeaderRow, callback }) {
+  async function sorter(
+    array,
+    { sortField, hasHeaderRow, callback, sortDirection }
+  ) {
     setSorting(true);
 
     // This pause is added because it is non-blocking and
@@ -69,7 +89,7 @@ function useSort() {
     }
 
     // Define sorting function
-    const sortBy = sortFunctions[dataType](columnIndex);
+    const sortBy = sortFunctions[dataType][sortDirection](columnIndex);
 
     // Get sorted data
     const sortedRows = await runSort(
