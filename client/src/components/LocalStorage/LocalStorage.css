@@ -1,0 +1,45 @@
+.local-storage {
+  width: 100%;
+}
+
+.local-storage > div {
+  width: min(100%, 600px);
+}
+.local-storage input {
+  flex: 1;
+  border-color: transparent;
+}
+.local-storage input:focus {
+  flex: 1;
+  border-color: initial;
+}
+
+.localStorage-list-item {
+  border-radius: 3px;
+  width: 100%;
+}
+.localStorage-list-item form {
+  width: 100%;
+  display: flex;
+}
+
+.note-options {
+  position: relative;
+  padding-left: 20px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+}
+
+.note-primary input {
+  border: 2px solid lightskyblue;
+}
+.note-primary .note-options {
+  visibility: hidden;
+}

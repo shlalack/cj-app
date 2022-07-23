@@ -16,3 +16,8 @@ export const dataTypes = {
   decimal: "decimal",
   date: "date",
 };
+
+export const sortDirections = {
+  ascending: "ascending",
+  descending: "descending",
+};
